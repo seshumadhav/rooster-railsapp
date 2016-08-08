@@ -22,5 +22,13 @@ module RoosterRailsapp
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
+
+    config.before_configuration do
+      secret_file = File.read(Rails.root + 'client_secret.json')
+      secret_hash = JSON.parse secret_file
+
+      ENV['GOOGLE_API_CLIENT_ID'] = secret_hash['web']['client_id']
+      ENV['GOOGLE_API_CLIENT_SECRET'] = secret_hash['web']['client_secret']
+    end
   end
 end
