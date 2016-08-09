@@ -1,0 +1,15 @@
+<h1>Hello world! This is where rooster would print its findings!</h1>
+<br><br>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr><td><h2>Calendar List</h2></td></tr>
+  </thead>
+
+  <tbody>
+  <% @calendars_ids.each do |id| %>
+     <tr><td><h5><%= id %></h5></td></tr>
+  <% end %>
+  </tbody>
+
+</table>

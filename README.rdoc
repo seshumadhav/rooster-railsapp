@@ -12,6 +12,9 @@ http://9a1d525e.ngrok.io
 
 # URLs
 
+Calendar API Service
+http://www.rubydoc.info/github/google/google-api-ruby-client/Google/Apis/CalendarV3/
+
 Apps connected to my gmail account
 https://security.google.com/settings/security/permissions?pli=1
 
