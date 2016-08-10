@@ -16,4 +16,6 @@
 !/log/.keep
 /tmp
 
-client_secret.json
+config/client_secret.json
+config/calendar_ids_of_hyd_team.yml
+

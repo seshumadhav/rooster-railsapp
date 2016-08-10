@@ -25,7 +25,7 @@ module RoosterRailsapp
     # config.active_record.raise_in_transactional_callbacks = true
 
     config.before_configuration do
-      secret_file = File.read(Rails.root + 'client_secret.json')
+      secret_file = File.read(Rails.root + 'config/client_secret.json')
       secret_hash = JSON.parse secret_file
 
       ENV['GOOGLE_API_CLIENT_ID'] = secret_hash['web']['client_id']
