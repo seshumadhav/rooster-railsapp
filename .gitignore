@@ -18,4 +18,6 @@
 
 config/client_secret.json
 config/calendar_ids_of_hyd_team.yml
+config/calendar_ids_black_list.yml
 
+.idea

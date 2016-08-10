@@ -14,7 +14,24 @@ class CalendarUtils
     calendar_ids.select {|id| !id.end_with?('group.calendar.google.com') && !id.end_with?('group.v.calendar.google.com')}
   end
 
-  def self.get_events(calendar_id)
+  def self.get_events_summary(should_filter_groups, should_include_calendar_ids_of_hyd_team)
+    begin_ts = Time.now
+    # events = get_events(get_calendar_ids_list(true, true))
+    events = get_events(['seshu@indeed.com', 'sasibaratam@indeed.com'])
+    end_ts = Time.now
+    total_time = end_ts - begin_ts
+    # puts "\n\n===\nComputation time: #{total_time.to_i}s\n===\n"
+    events
+  end
+
+  def self.get_events(calendar_ids = [])
+    id_to_events_hash = {}
+    calendar_ids.each { |calendar_id | id_to_events_hash[calendar_id] = get_events_of_a_calendar_id(calendar_id) }
+
+    id_to_events_hash
+  end
+
+  def self.get_events_of_a_calendar_id(calendar_id)
     events = calendar_service.list_events(calendar_id,
                                           max_results: 2500,
                                           single_events: true,
