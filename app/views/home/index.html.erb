@@ -5,15 +5,19 @@
   <thead>
     <tr>
       <td><h3>Calendar ID</h3></td>
-      <td><h3>Num Events</h3></td>
+      <% @events_gist_headings.each do |heading| %>
+        <td><h3><%= heading %></h3></td>
+      <% end %>
     </tr>
   </thead>
 
   <tbody>
-  <% @events_summary.each do |calendar_id, events| %>
+  <% @events_gist.each do |calendar_id, event_gist_hash| %>
       <tr>
         <td><h5><%= calendar_id %></h5></td>
-        <td><h5><%= events.items.size %></h5></td>
+        <% event_gist_hash.values.each do |column| %>
+            <td><h5><%= column %></h5></td>
+        <% end %>
       </tr>
   <% end %>
   </tbody>
