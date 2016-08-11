@@ -14,103 +14,63 @@ class CalendarUtils
     calendar_ids.select {|id| !id.end_with?('group.calendar.google.com') && !id.end_with?('group.v.calendar.google.com')}
   end
 
-  def self.get_events_summary(should_filter_groups, should_include_calendar_ids_of_hyd_team)
-    begin_ts = Time.now
-
-    events = get_events(get_calendar_ids_list(true, true))
-    # events = get_events_for_calendar_ids(['seshu@indeed.com', 'sasibaratam@indeed.com'])
-    end_ts = Time.now
-
-    total_time = end_ts - begin_ts
-    # puts "\n\n===\nComputation time: #{total_time.to_i}s\n===\n"
-    events
+  def self.get_events_gist(should_filter_groups, should_include_calendar_ids_of_hyd_team, since_year, since_quarter_number)
+    get_events_gist_for_calendar_ids(get_calendar_ids_list(true, true), since_year, since_quarter_number)
+    # get_events_gist_for_calendar_ids(['harish@indeed.com', 'sasibaratam@indeed.com'], since_year, since_quarter_number)
   end
 
-  def self.get_events_gist(should_filter_groups, should_include_calendar_ids_of_hyd_team)
-    # get_events_gist_for_calendar_ids(get_calendar_ids_list(true, true))
-    get_events_gist_for_calendar_ids(['harish@indeed.com', 'sasibaratam@indeed.com'])
-  end
-
-  def self.get_events_gist2(should_filter_groups, should_include_calendar_ids_of_hyd_team, since_year, since_quarter_number)
-    # get_events_gist_for_calendar_ids2(get_calendar_ids_list(true, true), since_year, since_quarter_number)
-    get_events_gist_for_calendar_ids2(['harish@indeed.com', 'sasibaratam@indeed.com'], since_year, since_quarter_number)
-  end
-
-
-  def self.get_events_gist_headings(events_gist)
-    calendar_id, gist = events_gist.first
-    gist.keys
-  end
-
-  def self.get_events_for_calendar_ids(calendar_ids = [])
-    id_to_events_hash = {}
-    calendar_ids.each { |calendar_id | id_to_events_hash[calendar_id] = get_events_of_a_calendar_id(calendar_id) }
-
-    id_to_events_hash
-  end
-
-  #   {
-  #      'seshu@indeed.com': {
-  #                             "2016 Q3": 10,
-  #                             "2016 Q2": 12,
-  #                             "2016 Q1": 13,
-  #                             ...
-  #                             "2015 Q3": 25
-  #                          }
-  #   },
-  #   {
-  #   }
-  def self.get_events_gist_for_calendar_ids(calendar_ids = [])
+  def self.get_events_gist_for_calendar_ids(calendar_ids = [], since_year, since_quarter_number)
     id_to_gist_hash = {}
 
     calendar_ids.each do |calendar_id|
-      id_to_gist_hash[calendar_id] = get_events_gist_of_a_calendar_id(calendar_id)
+      id_to_gist_hash[calendar_id] = get_events_gist_of_a_calendar_id(calendar_id, since_year, since_quarter_number)
     end
 
     id_to_gist_hash
-  end
-
-  def self.get_events_gist_for_calendar_ids2(calendar_ids = [], since_year, since_quarter_number)
-    id_to_gist_hash = {}
-
-    calendar_ids.each do |calendar_id|
-      id_to_gist_hash[calendar_id] = get_events_gist_of_a_calendar_id2(calendar_id, since_year, since_quarter_number)
-    end
-
-    id_to_gist_hash
-  end
-
-  def self.get_events_gist_of_a_calendar_id(calendar_id)
-    years_and_quarters = DateUtils.get_year_quarters_since(2015, 3);
-
-    hash = {}
-    years_and_quarters.each do |year_quarter_number_hash|
-      year, quarter_number = year_quarter_number_hash.first
-      events = get_events_of_a_calendar_id_in_quarter(calendar_id, year, quarter_number)
-
-      year_quarter_as_string = "#{year.to_s} Q#{quarter_number.to_s.upcase}"
-      hash[year_quarter_as_string] = events.items.size
-    end
-
-    hash
   end
 
   #   PROPOSED:
   #   {
-  #       'seshu@indeed.com': {
-  #                               "num_events": 1290,
-  #                               "duration_in_business_days" : 23,
-  #                               "2016 Q3": {
-  #                                             "num_events": 1290,
-  #                                             "duration_in_business_days" : 23,
-  #                                          },
-  #                               "2016 Q2": {
-  #                                             "num_events": 1290,
-  #                                             "duration_in_business_days" : 23,
-  #                                          },
-  #                           }
-  #   }
-  def self.get_events_gist_of_a_calendar_id2(calendar_id, since_year, since_quarter_number)
+  #     "sasibaratam@indeed.com"=>
+  #     {"2016 Q3"=>
+  #          {"num_events"=>205,
+  #           "num_events_attended"=>205,
+  #           "duration_in_business_days"=>17.44,
+  #           "num_days_in_quarter"=>68,
+  #           "percent_time_in_meetings"=>25.65},
+  #      "2016 Q2"=>
+  #          {"num_events"=>192,
+  #           "num_events_attended"=>192,
+  #           "duration_in_business_days"=>23.32,
+  #           "num_days_in_quarter"=>67,
+  #           "percent_time_in_meetings"=>34.81},
+  #      "2016 Q1"=>
+  #          {"num_events"=>224,
+  #           "num_events_attended"=>224,
+  #           "duration_in_business_days"=>15.75,
+  #           "num_days_in_quarter"=>66,
+  #           "percent_time_in_meetings"=>23.86},
+  #      "2015 Q4"=>
+  #          {"num_events"=>121,
+  #           "num_events_attended"=>121,
+  #           "duration_in_business_days"=>10.34,
+  #           "num_days_in_quarter"=>68,
+  #           "percent_time_in_meetings"=>15.21},
+  #      "2015 Q3"=>
+  #          {"num_events"=>19,
+  #           "num_events_attended"=>19,
+  #           "duration_in_business_days"=>2.38,
+  #           "num_days_in_quarter"=>68,
+  #           "percent_time_in_meetings"=>3.5},
+  #      "num_events"=>761,
+  #      "num_events_attended"=>761,
+  #      "duration_in_business_days"=>69.23,
+  #      "num_days_so_far"=>337,
+  #      "percent_time_in_meetings"=>20.54}
+  #    }
+  #    }
+  # #
+  def self.get_events_gist_of_a_calendar_id(calendar_id, since_year, since_quarter_number)
     years_and_quarters = DateUtils.get_year_quarters_since(since_year, since_quarter_number)
 
     quarter_gist = {}
@@ -144,7 +104,7 @@ class CalendarUtils
     hash
   end
 
-  def self.get_events_gist_of_a_calendar_id2_headings(since_year, since_quarter_number)
+  def self.get_events_gist_of_a_calendar_id_headings(since_year, since_quarter_number)
     years_and_quarters = DateUtils.get_year_quarters_since(since_year, since_quarter_number)
 
     headings = []
@@ -169,8 +129,6 @@ class CalendarUtils
     gist = {}
 
     attended_events = filter_declined_events(calendar_id, events)
-    puts "All: #{events.items.size}"
-    puts "Filtered: #{attended_events.size}"
 
     gist['num_events'] = events.items.size
     gist['num_events_attended'] = attended_events.size
@@ -198,7 +156,7 @@ class CalendarUtils
     event.attendees.each do |attendee|
       puts "Event.attendee => #{attendee.id}\tStatus: #{attendee.response_status}"
 
-      puts "declined_event: Response_status: (#{attendeed.id}, #{attendee.response_status}"
+      puts "declined_event: Response_status: (#{attendee.id}, #{attendee.response_status}"
       if attendee.id == calendar_id && attendee.response_status == 'declined'
         return true
       end
