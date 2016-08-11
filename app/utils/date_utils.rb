@@ -7,6 +7,13 @@ class DateUtils
       4 => 31
   }
 
+  DAYS_IN_QUARTER = {
+      1 => (23+20+23),
+      2 => (22+23+22),
+      3 => (23+23+22),
+      4 => (23+22+23)
+  }
+
   # Returns hash like below
   # [ {2015: 3}, {2015: 4}, .. , {2016: 3}]
   def self.get_year_quarters_since(year, quarter_number)
