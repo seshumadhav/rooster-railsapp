@@ -13,3 +13,9 @@
  *= require_tree .
  *= require_self
  */
+
+thead {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+}

@@ -12,11 +12,11 @@
   </thead>
 
   <tbody>
-  <% @events_gist.each do |calendar_id, event_gist_hash| %>
+  <% @base.each do |calendar_id, summary| %>
       <tr>
-        <td><h5><%= calendar_id %></h5></td>
-        <% event_gist_hash.values.each do |column| %>
-            <td title="<%= column %>"><%= column.class == Hash ? number_to_percentage(column['percent_time_in_meetings'], precision: 2) : column %></td>
+        <td><%= calendar_id %></td>
+        <% summary.map do |quarter, data| %>
+            <td title="<%= GistUtils.print(@more[calendar_id][quarter]) %>"><%= data %></td>
         <% end %>
       </tr>
   <% end %>

@@ -15,9 +15,9 @@ class CalendarUtils
     calendar_ids.select {|id| !id.end_with?('group.calendar.google.com') && !id.end_with?('group.v.calendar.google.com')}
   end
 
-  def self.get_events_gist(should_filter_groups, should_include_calendar_ids_of_hyd_team, since_year, since_quarter_number)
-    get_events_gist_for_calendar_ids(get_calendar_ids_list(true, true), since_year, since_quarter_number)
-    # get_events_gist_for_calendar_ids(['harish@indeed.com', 'sasibaratam@indeed.com'], since_year, since_quarter_number)
+  def self.get_events_gist(should_filter_groups, should_include_calendar_ids_of_hyd_team, since_year, since_quarter_number, for_all)
+    ids = for_all ? get_calendar_ids_list(true, true) : ['harish@indeed.com', 'sasibaratam@indeed.com']
+    get_events_gist_for_calendar_ids(ids, since_year, since_quarter_number)
   end
 
   def self.get_events_gist_for_calendar_ids(calendar_ids = [], since_year, since_quarter_number)
@@ -90,17 +90,17 @@ class CalendarUtils
 
       hash[year_quarter_as_string] = quarter_gist
 
-      num_events += quarter_gist['num_events']
-      num_events_attended += quarter_gist['num_events_attended']
-      duration_in_business_days += quarter_gist['duration_in_business_days']
-      num_days_so_far += quarter_gist['num_days_in_quarter']
+      num_events += quarter_gist[GistUtils::NUM_EVENTS]
+      num_events_attended += quarter_gist[GistUtils::NUM_EVENTS_ATTENDED]
+      duration_in_business_days += quarter_gist[GistUtils::DAYS_SPENT_IN_MEETINGS]
+      num_days_so_far += quarter_gist[GistUtils::NUM_DAYS_IN_QUARTER]
     end
 
-    hash['num_events'] = num_events
-    hash['num_events_attended'] = num_events_attended
-    hash['duration_in_business_days'] = duration_in_business_days.round(2)
-    hash['num_days_so_far'] = num_days_so_far
-    hash['percent_time_in_meetings'] = (duration_in_business_days.to_f * 100 / num_days_so_far).round(2)
+    hash[GistUtils::NUM_EVENTS] = num_events
+    hash[GistUtils::NUM_EVENTS_ATTENDED] = num_events_attended
+    hash[GistUtils::DAYS_IN_INDEED] = num_days_so_far
+    hash[GistUtils::DAYS_SPENT_IN_MEETINGS] = duration_in_business_days.round
+    hash[GistUtils::PERCENT_TIME_IN_MEETINGS] = (duration_in_business_days.to_f * 100 / num_days_so_far).round(2)
 
     hash
   end
@@ -131,11 +131,11 @@ class CalendarUtils
 
     attended_events = filter_declined_events(calendar_id, events)
 
-    gist['num_events'] = events.items.size
-    gist['num_events_attended'] = attended_events.size
-    gist['duration_in_business_days'] = get_duration_of_events_in_business_days(attended_events)
-    gist['num_days_in_quarter'] = events.items.size == 0 ? 0 : DateUtils::DAYS_IN_QUARTER[quarter_number]
-    gist['percent_time_in_meetings'] = events.items.size == 0 ? 0 : (gist['duration_in_business_days'].to_f * 100 / gist['num_days_in_quarter']).round(2)
+    gist[GistUtils::NUM_EVENTS] = events.items.size
+    gist[GistUtils::NUM_EVENTS_ATTENDED] = attended_events.size
+    gist[GistUtils::NUM_DAYS_IN_QUARTER] = events.items.size == 0 ? 0 : DateUtils::DAYS_IN_QUARTER[quarter_number]
+    gist[GistUtils::DAYS_SPENT_IN_MEETINGS] = get_duration_of_events_in_business_days(attended_events)
+    gist[GistUtils::PERCENT_TIME_IN_MEETINGS] = events.items.size == 0 ? 0 : (gist[GistUtils::DAYS_SPENT_IN_MEETINGS].to_f * 100 / gist[GistUtils::NUM_DAYS_IN_QUARTER]).round(2)
 
     gist
   end
