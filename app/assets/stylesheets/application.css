@@ -18,4 +18,9 @@ thead {
     background-color: orange;
     color: white;
     font-weight: bold;
+    text-align: center;
+}
+
+td {
+    text-align: center;
 }

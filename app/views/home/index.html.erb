@@ -4,7 +4,7 @@
 <table class="table table-striped table-bordered">
   <thead>
     <tr>
-      <td>Calendar ID</td>
+      <td>Name</td>
       <% @events_gist_headings.each do |heading| %>
         <td><%= heading %></td>
       <% end %>
@@ -14,9 +14,9 @@
   <tbody>
   <% @base.each do |calendar_id, summary| %>
       <tr>
-        <td><%= calendar_id %></td>
-        <% summary.map do |quarter, data| %>
-            <td title="<%= GistUtils.print(@more[calendar_id][quarter]) %>"><%= data %></td>
+        <td><%= calendar_id.split('@')[0] %></td>
+        <% summary.map do |key, data| %>
+            <td title="<%= GistUtils.print(@more[calendar_id][key]) %>"><%= data %><%= GistUtils.is_quarter_heading(key) ? ' %' : '' %></td>
         <% end %>
       </tr>
   <% end %>

@@ -87,5 +87,9 @@ class GistUtils
     string
   end
 
+  def self.is_quarter_heading(heading)
+    heading.start_with?('2') || heading.start_with?('%')
+  end
+
 
 end
