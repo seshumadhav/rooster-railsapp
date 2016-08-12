@@ -6,6 +6,7 @@ class CalendarUtils
 
     calendar_ids_to_return = should_filter_groups ? filter_group_calendars(calendar_ids_list) : calendar_ids_list
     calendar_ids_to_return = calendar_ids_to_return + YAML.load_file('config/calendar_ids_of_hyd_team.yml') if should_include_calendar_ids_of_hyd_team
+    calendar_ids_to_return = calendar_ids_to_return - YAML.load_file('config/calendar_ids_black_list.yml')
 
     calendar_ids_to_return
   end
@@ -97,7 +98,7 @@ class CalendarUtils
 
     hash['num_events'] = num_events
     hash['num_events_attended'] = num_events_attended
-    hash['duration_in_business_days'] = duration_in_business_days
+    hash['duration_in_business_days'] = duration_in_business_days.round(2)
     hash['num_days_so_far'] = num_days_so_far
     hash['percent_time_in_meetings'] = (duration_in_business_days.to_f * 100 / num_days_so_far).round(2)
 
@@ -143,7 +144,6 @@ class CalendarUtils
     filtered = []
 
     events.items.each do |event|
-      puts "Event: #{event}"
       filtered << event unless declined_event(calendar_id, event)
     end
 
@@ -154,9 +154,6 @@ class CalendarUtils
     return false if event.attendees.blank?
 
     event.attendees.each do |attendee|
-      puts "Event.attendee => #{attendee.id}\tStatus: #{attendee.response_status}"
-
-      puts "declined_event: Response_status: (#{attendee.id}, #{attendee.response_status}"
       if attendee.id == calendar_id && attendee.response_status == 'declined'
         return true
       end
@@ -168,8 +165,6 @@ class CalendarUtils
   def self.get_duration_of_events_in_business_days(events)
     duration_in_secs = get_duration_of_events_in_seconds(events)
     duration_in_days = (duration_in_secs.to_f / (60 * 60 * 8)).round(2)
-    puts "get_duration_of_events_in_business_days: #{duration_in_days}\tin_seconds: #{duration_in_secs}"
-
     duration_in_days
   end
 
@@ -185,8 +180,6 @@ class CalendarUtils
   end
 
   def self.get_duration_of_event_in_seconds(event)
-    puts "Event: #{event.start.date_time} to #{event.end.date_time}\nDelta: #{event.end.date_time.to_i - event.start.date_time.to_i}"
-
     event.end.date_time.to_i - event.start.date_time.to_i
   end
 
