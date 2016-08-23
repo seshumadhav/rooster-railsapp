@@ -3,7 +3,6 @@
  */
 
 $(document).on('ready page:load', function () {
-    $('#results').bootstrapTable();
     $('#events_gist').bootstrapTable();
 });
 

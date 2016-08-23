@@ -4,9 +4,13 @@
 <table id="events_gist" data-toggle="table" data-striped="true" data-pagination="true" data-page-size="10" data-search="true" data-sortable="true">
   <thead>
   <tr>
-    <th>Name</th>
+    <th data-sortable="true">Name</th>
     <% @events_gist_headings.each do |heading| %>
-        <th><%= heading %></th>
+        <% if GistUtils.is_quarter_heading(heading) %>
+            <th data-sortable="true" data-sorter="percentSorter"><%= heading %></th>
+        <% else %>
+            <th data-sortable="true" ><%= heading %></th>
+        <% end %>
     <% end %>
   </tr>
   </thead>

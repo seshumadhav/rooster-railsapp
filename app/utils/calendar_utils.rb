@@ -154,8 +154,7 @@ class CalendarUtils
     return false if event.attendees.blank?
 
     event.attendees.each do |attendee|
-      puts "attendee: #{attendee}\tattendee_response_status: #{attendee.response_status}"
-      if attendee.id == calendar_id && attendee.response_status == 'declined'
+      if attendee.email == calendar_id && attendee.response_status == 'declined'
         return true
       end
     end
@@ -194,19 +193,6 @@ class CalendarUtils
                                           order_by: 'startTime',
                                           time_min: from,
                                           time_max: to)
-  end
-
-  def self.get_events_of_a_calendar_id(calendar_id)
-    events = calendar_service.list_events(calendar_id,
-                                          max_results: 2500,
-                                          single_events: true,
-                                          order_by: 'startTime',
-                                          # time_min: Time.new(2016,07,01,00,00,00, "+05:30"), # Doesnt work
-                                          # time_min: Time.now - 1.month, # Doesnt work
-                                          # time_min: "2016-08-01T00:00:00+05:30",
-                                          time_min: DateUtils.get_this_quarter_begin_date,
-                                          time_max: Time.now.iso8601)
-
   end
 
   private
