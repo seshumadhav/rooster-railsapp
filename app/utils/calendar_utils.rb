@@ -154,6 +154,7 @@ class CalendarUtils
     return false if event.attendees.blank?
 
     event.attendees.each do |attendee|
+      puts "attendee: #{attendee}\tattendee_response_status: #{attendee.response_status}"
       if attendee.id == calendar_id && attendee.response_status == 'declined'
         return true
       end

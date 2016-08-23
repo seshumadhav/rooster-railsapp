@@ -1,14 +1,14 @@
 <h1 align="center">ROOSTER</h1>
 <br><br>
 
-<table class="table table-striped table-bordered">
+<table id="events_gist" data-toggle="table" data-striped="true" data-pagination="true" data-page-size="10" data-search="true" data-sortable="true">
   <thead>
-    <tr>
-      <td>Name</td>
-      <% @events_gist_headings.each do |heading| %>
-        <td><%= heading %></td>
-      <% end %>
-    </tr>
+  <tr>
+    <th>Name</th>
+    <% @events_gist_headings.each do |heading| %>
+        <th><%= heading %></th>
+    <% end %>
+  </tr>
   </thead>
 
   <tbody>
@@ -23,3 +23,4 @@
   </tbody>
 
 </table>
+

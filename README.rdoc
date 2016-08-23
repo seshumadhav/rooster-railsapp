@@ -7,8 +7,7 @@ Download ngrok
 $ ./ngrok http 3000
 Will generate a public URL for your localhost.
 That URL should be used in your Google Developer Console settings for oauth_callback URL and JS origins.
-http://9a1d525e.ngrok.io
-
+eg: http://76fbeee8.ngrok.io
 
 # URLs
 
