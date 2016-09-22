@@ -1,21 +1,23 @@
-# README
+README
+
 Main tutorial that helped develop this:
 https://www.twilio.com/blog/2014/09/gmail-api-oauth-rails.html
 
-### ngrok
+ngrok
+
 Download ngrok
 $ ./ngrok http 3000
 Will generate a public URL for your localhost.
 That URL should be used in your Google Developer Console settings for oauth_callback URL and JS origins.
 eg: http://76fbeee8.ngrok.io
 
-# URLs
+URLs
 
-Calendar API Service
+- Calendar API Service
 http://www.rubydoc.info/github/google/google-api-ruby-client/Google/Apis/CalendarV3/
 
-Apps connected to my gmail account
+- Apps connected to my gmail account
 https://security.google.com/settings/security/permissions?pli=1
 
-Dev console
+- Dev console
 https://console.developers.google.com

@@ -1,8 +1,3 @@
-# app/models/token.rb
-
-require 'net/http'
-require 'json'
-
 class Token < ActiveRecord::Base
 
   def to_params
