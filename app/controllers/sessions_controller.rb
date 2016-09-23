@@ -1,7 +1,5 @@
 class SessionsController< ApplicationController
 
-  layout false
-
   def new
   end
 
@@ -20,5 +18,8 @@ class SessionsController< ApplicationController
         expires_at: Time.at(@auth['expires_at']).to_datetime,
         email: email,
         name: name)
+  end
+
+  def welcome
   end
 end
