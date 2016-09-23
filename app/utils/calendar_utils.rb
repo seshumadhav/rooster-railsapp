@@ -8,7 +8,7 @@ class CalendarUtils
     calendar_ids_to_return = calendar_ids_to_return + YAML.load_file('config/calendar_ids_of_hyd_team.yml') if should_include_calendar_ids_of_hyd_team
     calendar_ids_to_return = calendar_ids_to_return - YAML.load_file('config/calendar_ids_black_list.yml')
 
-    calendar_ids_to_return
+    calendar_ids_to_return.uniq
   end
 
   def self.filter_group_calendars(calendar_ids)
@@ -71,6 +71,14 @@ class CalendarUtils
   #    }
   #    }
   # #
+  def self.get_quarter_key_in_file_db(year, quarter_number)
+    "#{year}:#{quarter_number}"
+  end
+
+  def self.does_file_db_has_data(file_content, year, quarter_number)
+    !file_content.blank? && !file_content[get_quarter_key_in_file_db(year, quarter_number)].blank?
+  end
+
   def self.get_events_gist_of_a_calendar_id(calendar_id, since_year, since_quarter_number)
     years_and_quarters = DateUtils.get_year_quarters_since(since_year, since_quarter_number)
 
@@ -81,12 +89,27 @@ class CalendarUtils
     num_days_so_far = 0
     hash = {}
 
+    filename = "db/data/#{get_name(calendar_id)}.txt"
+    File.open(filename, "w+") unless File.file? (filename)
+
     years_and_quarters.each do |year_quarter_number_hash|
       year, quarter_number = year_quarter_number_hash.first
-      events = get_events_of_a_calendar_id_in_quarter(calendar_id, year, quarter_number)
 
       year_quarter_as_string = get_heading(year, quarter_number)
-      quarter_gist = get_quarter_gist(calendar_id, events, year, quarter_number)
+      file_content_hash = eval(File.read(filename)) || {}
+      if ((!DateUtils.is_it_this_quarter(year, quarter_number)) && (does_file_db_has_data(file_content_hash, year, quarter_number)))
+        quarter_gist = file_content_hash[get_quarter_key_in_file_db(year, quarter_number)]
+      else
+        puts "I Fetching data for #{filename}, for #{year}:#{quarter_number}"
+        events = get_events_of_a_calendar_id_in_quarter(calendar_id, year, quarter_number)
+        quarter_gist = get_quarter_gist(calendar_id, events, year, quarter_number)
+        File.open(filename, "w+") do |f|
+          key = get_quarter_key_in_file_db(year, quarter_number)
+          value = quarter_gist
+          file_content_hash[key] = value
+          f.write(file_content_hash)
+        end
+      end
 
       hash[year_quarter_as_string] = quarter_gist
 
@@ -147,7 +170,28 @@ class CalendarUtils
       filtered << event unless declined_event(calendar_id, event)
     end
 
+    filtered_without_weekends = []
+    # filtered.each do |event|
+    #   if is_event_on_weekend(event)
+    #     puts "weekend"
+    #   else
+    #     puts "weekday"
+    #   end
+    # end
+
     filtered
+  end
+
+  def self.is_event_on_weekend(event)
+    false if event.start.blank? || event.end.blank? || event.start.date_time.blank? || event.end.date_time.blank?
+
+    # puts "Start: #{event.start.date_time}, #{event.end.date_time}"
+    # puts "summary: #{event.summary}\tupdated_at: #{event.updated}"
+    is_weekend_day(event.start.date_time) && is_weekend_day(event.end.date_time)
+  end
+
+  def self.is_weekend_day(datetime)
+    datetime.cwday == 0 || datetime.cwday == 6
   end
 
   def self.declined_event(calendar_id, event)
@@ -199,6 +243,10 @@ class CalendarUtils
 
   def self.calendar_service
     CalendarServiceFactory.get_calendar_service
+  end
+
+  def self.get_name(calendar_id)
+    calendar_id.split('@')[0]
   end
 
 end

@@ -111,4 +111,8 @@ class DateUtils
     (integer < 10) ? "0#{integer.to_s}" : "#{integer.to_s}"
   end
 
+  def self.is_it_this_quarter(year, quarter_number)
+    year.to_i == DateUtils.get_this_year_number.to_i && quarter_number.to_i == DateUtils.get_this_quarter_number.to_i
+  end
+
 end
