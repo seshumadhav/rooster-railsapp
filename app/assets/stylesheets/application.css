@@ -43,18 +43,18 @@ th {
     min-height: 100%;
 }
 
-h1 {
-    position: absolute;
-    top: 200px;
-    left: 0;
-    width: 100%;
-}
+/*h1 {*/
+    /*position: absolute;*/
+    /*top: 200px;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+/*}*/
 
-h1 span {
-    color: gray;
-    font: bold 24px/45px Helvetica, Sans-Serif;
-    letter-spacing: -1px;
-    padding: 10px;
+/*h1 span {*/
+    /*color: gray;*/
+    /*font: bold 24px/45px Helvetica, Sans-Serif;*/
+    /*letter-spacing: -1px;*/
+    /*padding: 10px;*/
 }
 
 h3 {
